@@ -59,7 +59,7 @@ def update(new_title, feature, model):
 	emb = model.embedder.encode(new_title).unsqueeze(0)
 	_, (h1, c1) = model.encoder(emb, (h0, c0))
 	assert h1.size()[0] == model.encoder.num_layers
-	return (h1[1].squeeze(0).tolist(), c1[1].squeeze(0).tolist())
+	return h1[1].squeeze(0).tolist() + c1[1].squeeze(0).tolist()
 
 def feedback(u1, u2, label, model):
 	assert label.item() in [-1, 1]
