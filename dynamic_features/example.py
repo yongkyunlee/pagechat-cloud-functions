@@ -55,11 +55,13 @@ def main(mp, op):
 def update(new_title, feature, model):
 	h0 = torch.tensor(feature[:len(feature)//2])
 	c0 = torch.tensor(feature[len(feature)//2:])
+	h0 = torch.stack([h0, h0], dim=0).unsqueeze(1)
+	c0 = torch.stack([c0, c0], dim=0).unsqueeze(1)
+	
 	assert type(new_title) == str
-	emb = model.embedder.encode(new_title).unsqueeze(0)
+	emb = model.embedder.encode(new_title).unsqueeze(0).unsqueeze(0)
 	_, (h1, c1) = model.encoder(emb, (h0, c0))
-	assert h1.size()[0] == model.encoder.num_layers
-	return h1[1].squeeze(0).tolist() + c1[1].squeeze(0).tolist()
+	return h1[1].squeeze(0).squeeze(0).tolist() + c1[1].squeeze(0).squeeze(0).tolist()
 
 def feedback(u1, u2, label, model):
 	assert label.item() in [-1, 1]
